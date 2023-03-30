@@ -32,6 +32,6 @@ public class MainActivity extends AppCompatActivity {
         a.setSemestre(Integer.parseInt(semestre.getText().toString()));
         a.setNota(Double.parseDouble(nota.getText().toString()));
         long id = dao.inserir(a);
-        Toast.makeText(this, "Grade inserida com id:" + id, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Grade inserida com id: " + id, Toast.LENGTH_SHORT).show();
     }
 }

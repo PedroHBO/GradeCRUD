@@ -57,4 +57,9 @@ public class Grade implements Serializable {
     public void setNota(double nota) {
         this.nota = nota;
     }
+
+    @Override
+    public String toString() {
+        return materia;
+    }
 }
