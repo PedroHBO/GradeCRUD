@@ -60,6 +60,12 @@ public class Grade implements Serializable {
 
     @Override
     public String toString() {
-        return materia;
+        String text = materia +
+                "\nCurso: " + curso +
+                "\nProfessor: " + professor +
+                "\nSemestre: " + semestre +
+                "\nNota: " + nota;
+
+        return text;
     }
 }
