@@ -44,4 +44,9 @@ public class GradeDAO {
         }
     return  gradeList;
     }
+
+    public void excluir(Grade a){
+       banco.delete("grade", "id = ?", new String[]{String.valueOf(a.getId())});
+    }
+
 }

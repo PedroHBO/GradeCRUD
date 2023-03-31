@@ -1,12 +1,17 @@
 package com.example.materias;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -15,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListarActivity extends AppCompatActivity {
-
     private ListView listView;
     private GradeDAO dao;
     private List<Grade> gradeList;
@@ -32,6 +36,7 @@ public class ListarActivity extends AppCompatActivity {
         gradeFiltrada.addAll(gradeList);
         ArrayAdapter<Grade> adaptador = new ArrayAdapter<Grade>(this, android.R.layout.simple_list_item_1, gradeFiltrada);
         listView.setAdapter(adaptador);
+        registerForContextMenu(listView);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -55,6 +60,11 @@ public class ListarActivity extends AppCompatActivity {
         return true;
     }
 
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater i = getMenuInflater();
+        i.inflate(R.menu.menu_context, menu);
+    }
     public void procuraMateria (String materia) {
         gradeFiltrada.clear();
         for(Grade g : gradeList){
@@ -67,6 +77,27 @@ public class ListarActivity extends AppCompatActivity {
     public void cadastrar(MenuItem item){
         Intent it = new Intent(this, MainActivity.class);
         startActivity(it);
+    }
+
+    public void excluir(MenuItem item){
+        AdapterView.AdapterContextMenuInfo menuInfo =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final Grade gradeExcluir = gradeFiltrada.get(menuInfo.position);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Observação")
+                .setMessage("Realmente deseja excluir a grade?")
+                .setNegativeButton("Não", null)
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        gradeFiltrada.remove(gradeExcluir);
+                        gradeList.remove(gradeExcluir);
+                        dao.excluir(gradeExcluir);
+                        listView.invalidateViews();
+                    }
+                }).create();
+        dialog.show();
     }
 
     @Override
