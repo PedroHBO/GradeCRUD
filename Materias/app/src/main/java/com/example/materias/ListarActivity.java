@@ -3,7 +3,6 @@ package com.example.materias;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -79,6 +78,14 @@ public class ListarActivity extends AppCompatActivity {
         startActivity(it);
     }
 
+    public void atualizar(MenuItem item){
+        AdapterView.AdapterContextMenuInfo menuInfo =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final Grade gradeAtualizar = gradeFiltrada.get(menuInfo.position);
+        Intent it = new Intent(this, MainActivity.class);
+        it.putExtra("grade", gradeAtualizar);
+        startActivity(it);
+    }
     public void excluir(MenuItem item){
         AdapterView.AdapterContextMenuInfo menuInfo =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -88,14 +95,11 @@ public class ListarActivity extends AppCompatActivity {
                 .setTitle("Observação")
                 .setMessage("Realmente deseja excluir a grade?")
                 .setNegativeButton("Não", null)
-                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        gradeFiltrada.remove(gradeExcluir);
-                        gradeList.remove(gradeExcluir);
-                        dao.excluir(gradeExcluir);
-                        listView.invalidateViews();
-                    }
+                .setPositiveButton("Sim", (dialog1, which) -> {
+                    gradeFiltrada.remove(gradeExcluir);
+                    gradeList.remove(gradeExcluir);
+                    dao.excluir(gradeExcluir);
+                    listView.invalidateViews();
                 }).create();
         dialog.show();
     }

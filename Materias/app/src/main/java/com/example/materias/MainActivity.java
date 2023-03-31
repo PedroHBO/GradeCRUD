@@ -2,6 +2,7 @@ package com.example.materias;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText materia, curso, professor, nota, semestre;
     private GradeDAO dao;
+    private Grade grade = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,16 +24,38 @@ public class MainActivity extends AppCompatActivity {
         semestre = findViewById(R.id.inpSemestre);
         nota = findViewById(R.id.inpNota);
         dao = new GradeDAO(this);
-    }
 
+        Intent it = getIntent();
+        if(it.hasExtra("grade")){
+            grade = (Grade) it.getSerializableExtra("grade");
+            materia.setText(grade.getMateria());
+            curso.setText(grade.getCurso());
+            professor.setText(grade.getProfessor());
+            semestre.setText(grade.getSemestre());
+            nota.setText(String.valueOf(grade.getNota()));
+        }
+    }
     public void salvar (View view){
-        Grade a = new Grade();
-        a.setMateria(materia.getText().toString());
-        a.setCurso(curso.getText().toString());
-        a.setProfessor(professor.getText().toString());
-        a.setSemestre(Integer.parseInt(semestre.getText().toString()));
-        a.setNota(Double.parseDouble(nota.getText().toString()));
-        long id = dao.inserir(a);
-        Toast.makeText(this, "Grade inserida com id: " + id, Toast.LENGTH_SHORT).show();
+
+        if (grade == null){
+            grade = new Grade();
+            grade.setMateria(materia.getText().toString());
+            grade.setCurso(curso.getText().toString());
+            grade.setProfessor(professor.getText().toString());
+            grade.setSemestre(Integer.parseInt(semestre.getText().toString()));
+            grade.setNota(Double.parseDouble(nota.getText().toString()));
+            long id = dao.inserir(grade);
+            Toast.makeText(this, "Grade inserida com sucesso", Toast.LENGTH_SHORT).show();
+            finish();
+        }else{
+            grade.setMateria(materia.getText().toString());
+            grade.setCurso(curso.getText().toString());
+            grade.setProfessor(professor.getText().toString());
+            grade.setSemestre(Integer.parseInt(semestre.getText().toString()));
+            grade.setNota(Double.parseDouble(nota.getText().toString()));
+            dao.atualizar(grade);
+            Toast.makeText(this, "Grade atualizada com sucesso", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 }
